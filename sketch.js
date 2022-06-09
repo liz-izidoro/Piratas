@@ -8,6 +8,7 @@ const Constraint = Matter.Constraint;
 
 var engine, world, ground, tower, towerImg;
 var backgroundImg;
+var cannon, cannonImg, cannonBaseImg;
 
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
@@ -32,6 +33,7 @@ function setup() {
   tower = Bodies.rectangle(160, 350, 160, 310, options);
   World.add(world, tower);
   
+  cannon = new Cannon(180, 110, 130, 100, 20);
  
 }
 
@@ -42,8 +44,9 @@ function draw() {
   rect(ground.position.x, ground.position.y, width *2, 1);
 
   push(); // captura uma nova configuração
-  rectMode(CENTER);
+  imageMode(CENTER);
   image(towerImg, tower.position.x, tower.position.y, 160, 310);
   pop(); // reverte (recupera) a configuração anterior
+  cannon.display();
   
 }
