@@ -1,55 +1,81 @@
-// módulo motor de física
 const Engine = Matter.Engine;
-// módulo mundo
 const World = Matter.World;
-// módulo corpos/objetos
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
 
-var engine, world, ground, tower, towerImg;
-var backgroundImg;
-var cannon, cannonImg, cannonBaseImg, cannonBall;
+var engine, world, backgroundImg,boat;
+var canvas, angle, tower, ground, cannon;
+var balls = [];
+var boats = [];
 
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
-  towerImg = loadImage("./assets/tower.png");
+  towerImage = loadImage("./assets/tower.png");
 }
 
 function setup() {
-
   canvas = createCanvas(1200, 600);
-  // cria motor de fisica
   engine = Engine.create();
-  // crio um mundo dentro do motor de fisica
   world = engine.world;
+  angleMode(DEGREES)
+  angle = 15
 
-  var options = {
-    isStatic: true
-  }
-
-  ground = Bodies.rectangle(0, height - 1, width * 2, 1, options);
+  ground = Bodies.rectangle(0, height - 1, width * 2, 1, { isStatic: true });
   World.add(world, ground);
-  
-  tower = Bodies.rectangle(160, 350, 160, 310, options);
-  World.add(world, tower);
-  
-  cannon = new Cannon(180, 110, 130, 100, 20);
 
-  cannonBall = new CannonBall(cannon.x, cannon.y);
- 
+  tower = Bodies.rectangle(160, 350, 160, 310, { isStatic: true });
+  World.add(world, tower);
+
+  cannon = new Cannon(180, 110, 130, 100, angle);
+  boat = new Boat(width-79, height - 60, 170, 170,-80);
 }
 
 function draw() {
-  image(backgroundImg, 0, 0, 1200, 600);
+  background(189);
+  image(backgroundImg, 0, 0, width, height);
+
   Engine.update(engine);
 
-  rect(ground.position.x, ground.position.y, width *2, 1);
-
-  push(); // captura uma nova configuração
-  imageMode(CENTER);
-  image(towerImg, tower.position.x, tower.position.y, 160, 310);
-  pop(); // reverte (recupera) a configuração anterior
-  cannon.display();
-  cannonBall.display();
   
+  rect(ground.position.x, ground.position.y, width * 2, 1);
+ 
+
+  push();  
+  imageMode(CENTER);
+  image(towerImage,tower.position.x, tower.position.y, 160, 310);
+  pop();
+
+
+  Matter.Body.setVelocity(boat.body,{x:-0.9, y:0})
+  boat.display()
+  
+
+  for (var i = 0; i < balls.length; i++) {
+    showCannonBalls(balls[i], i);
+  }
+
+  cannon.display();
+}
+
+function keyPressed() {
+  if (keyCode === DOWN_ARROW) {
+    var cannonBall = new CannonBall(cannon.x, cannon.y);
+    cannonBall.trajectory = [];
+    Matter.Body.setAngle(cannonBall.body, cannon.angle);
+    balls.push(cannonBall);
+  }
+}
+
+function showCannonBalls(ball, index) {
+  if (ball) {
+    ball.display();
+  }
+}
+
+
+
+function keyReleased() {
+  if (keyCode === DOWN_ARROW) {
+    balls[balls.length - 1].shoot();
+  }
 }
