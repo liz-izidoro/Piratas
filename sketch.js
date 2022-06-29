@@ -27,7 +27,6 @@ function setup() {
   World.add(world, tower);
 
   cannon = new Cannon(180, 110, 130, 100, angle);
-  boat = new Boat(width-79, height - 60, 170, 170,-80);
 }
 
 function draw() {
@@ -45,13 +44,11 @@ function draw() {
   image(towerImage,tower.position.x, tower.position.y, 160, 310);
   pop();
 
-
-  Matter.Body.setVelocity(boat.body,{x:-0.9, y:0})
-  boat.display()
-  
+  showBoats();
 
   for (var i = 0; i < balls.length; i++) {
     showCannonBalls(balls[i], i);
+    collisionWithBoat(i);
   }
 
   cannon.display();
@@ -72,7 +69,52 @@ function showCannonBalls(ball, index) {
   }
 }
 
+function showBoats() 
+{
+  // se já tiverem outros navios irá criar outros
+  if (boats.length > 0) {
+    
+    if(boats[boats.length - 1] === undefined || 
+      boats[boats.length - 1].body.position.x < width - 300) {
+      
+      var positions = [- 40, - 60, -70, -20];
+      var position = random(positions);
+      var boat = new Boat(
+        width, 
+        height - 100, 
+        170, 
+        170, 
+        position, 
+      );
 
+      boats.push(boat);
+    }
+
+    for (let i = 0; i < boats.length; i++) {
+      if(boats[i]) {
+        Matter.Body.setVelocity(boats[i].body, {x: -0.9, y:0});
+        boats[i].display();
+      }
+    }
+
+  } else {
+    // se ainda nao tiver navio vai criar o primeiro navio
+    var boat = new Boat (width, height - 60, 170, 170, -60);
+    boats.push(boat);
+  }
+}
+
+function collisionWithBoat(index)
+{
+  for (var i = 0; i < boats.length; i++) {
+    if (balls[index] !== undefined && boats[i] !== undefined) {
+      var collision = Matter.SAT.collides(balls[index].body, boats[i].body);
+      if (collision.collided) {
+        console.log(collision);
+      }
+    }
+  }
+}
 
 function keyReleased() {
   if (keyCode === DOWN_ARROW) {
