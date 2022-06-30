@@ -2,15 +2,21 @@ const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
+const Body = Matter.Body;
 
 var engine, world, backgroundImg,boat;
 var canvas, angle, tower, ground, cannon;
+var boatSpriteJson, boatSpriteImg, boatAnimation = [];
+var brokenBoatSpriteJson, brokenBoatSpriteImg;
 var balls = [];
 var boats = [];
 
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
   towerImage = loadImage("./assets/tower.png");
+
+  boatSpriteJson = loadJSON("./assets/boat/boat.json");
+  boatSpriteImg = loadImage("./assets/boat/boat.png");
 }
 
 function setup() {
@@ -27,6 +33,13 @@ function setup() {
   World.add(world, tower);
 
   cannon = new Cannon(180, 110, 130, 100, angle);
+
+  var boatFrames = boatSpriteJson.frames;
+  for (let i = 0; i < boatFrames.length; i++) {
+    var pos = boatFrames[i].position;
+    var img = boatSpriteImg.get(pos.x, pos.y, pos.w, pos.h);
+    boatAnimation.push(img);
+  }
 }
 
 function draw() {
@@ -84,7 +97,8 @@ function showBoats()
         height - 100, 
         170, 
         170, 
-        position, 
+        position,
+        boatAnimation
       );
 
       boats.push(boat);
@@ -94,12 +108,13 @@ function showBoats()
       if(boats[i]) {
         Matter.Body.setVelocity(boats[i].body, {x: -0.9, y:0});
         boats[i].display();
+        boats[i].animate();
       }
     }
 
   } else {
     // se ainda nao tiver navio vai criar o primeiro navio
-    var boat = new Boat (width, height - 60, 170, 170, -60);
+    var boat = new Boat (width, height - 60, 170, 170, -60, boatAnimation);
     boats.push(boat);
   }
 }
@@ -110,7 +125,10 @@ function collisionWithBoat(index)
     if (balls[index] !== undefined && boats[i] !== undefined) {
       var collision = Matter.SAT.collides(balls[index].body, boats[i].body);
       if (collision.collided) {
-        console.log(collision);
+        boats[i].remove(i);
+
+        World.remove(world, balls[index].body);
+        delete balls[index];
       }
     }
   }
