@@ -8,8 +8,11 @@ var engine, world, backgroundImg,boat;
 var canvas, angle, tower, ground, cannon;
 var boatSpriteJson, boatSpriteImg, boatAnimation = [];
 var brokenBoatSpriteJson, brokenBoatSpriteImg;
+var waterSplashJson, waterSplashImg;
+var waterSplahAnimation = [];
 var balls = [];
 var boats = [];
+var brokenBoatAnimation = []
 
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
@@ -17,6 +20,12 @@ function preload() {
 
   boatSpriteJson = loadJSON("./assets/boat/boat.json");
   boatSpriteImg = loadImage("./assets/boat/boat.png");
+
+  brokenBoatSpriteJson = loadJSON("./assets/boat/brokenBoat.json");
+  brokenBoatSpriteImg = loadImage("./assets/boat/brokenBoat.png");
+
+  waterSplashJson = loadJSON("./assets/waterSplash/waterSplash.json");
+  waterSplashImg = loadImage("./assets/waterSplash/waterSplash.png");
 }
 
 function setup() {
@@ -39,6 +48,19 @@ function setup() {
     var pos = boatFrames[i].position;
     var img = boatSpriteImg.get(pos.x, pos.y, pos.w, pos.h);
     boatAnimation.push(img);
+  }
+  var brokenBoatFrames = brokenBoatSpriteJson.frames;
+  for (let i = 0; i < brokenBoatFrames.length; i++) {
+    var pos = brokenBoatFrames[i].position;
+    var img = brokenBoatSpriteImg.get(pos.x, pos.y, pos.w, pos.h);
+    brokenBoatAnimation.push(img);
+  }
+  var waterSplashFrames = waterSplashJson.frames;
+  for (let index = 0; index < waterSplashFrames.length; index++) {
+    var pos = waterSplashFrames[index].position;
+    var img = waterSplashImg.get(pos.x, pos.y, pos.w, pos.h);
+    waterSplahAnimation.push(img);
+    
   }
 }
 

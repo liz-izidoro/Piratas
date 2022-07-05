@@ -10,7 +10,7 @@ class Boat {
     this.body = Bodies.rectangle(x, y, width, height, options);
     this.width = width;
     this.height = height;
-
+    this.isBroken = false;
     this.animation = boatAnimation;
     this.speed = 0.05;
     this.image = loadImage("./assets/boat.png");
@@ -38,11 +38,17 @@ class Boat {
 
   remove(index)
   {
-    Body.setVelocity(this.body, {x:0, y:0});
+    this.animation = brokenBoatAnimation;
+    this.speed = 0.05;
+    this.width = 300;
+    this.height = 300;
+    this.isBroken = true;
+
+  //Body.setVelocity(this.body, {x:0, y:0});
 
     setTimeout(() => {
-      World.remove(world, this.body);
+      World.remove(world, boats[index].body);
       delete boats[index];
-    }, 100);
+    }, 1000);
   }
 }
