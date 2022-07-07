@@ -35,7 +35,7 @@ class Boat {
   {
     this.speed += 0.05;
   }
-
+  // && (AND/e) e || (OR/ou)
   remove(index)
   {
     this.animation = brokenBoatAnimation;
@@ -49,6 +49,6 @@ class Boat {
     setTimeout(() => {
       World.remove(world, boats[index].body);
       delete boats[index];
-    }, 1000);
+    }, 3000);
   }
 }

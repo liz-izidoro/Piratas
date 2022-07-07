@@ -8,7 +8,8 @@ class CannonBall {
     this.image = loadImage("./assets/cannonball.png");
     this.animation = [this.image];
     this.trajectory = [];
-    this.spped = 0.05;
+    this.speed = 0.05;
+    this.isSink = false;
     World.add(world, this.body);
   }
 
@@ -43,5 +44,27 @@ class CannonBall {
     for (var i = 0; i < this.trajectory.length; i++) {
       image(this.image, this.trajectory[i][0], this.trajectory[i][1], 5, 5);
     }
+  }
+
+  animate()
+  {
+    this.speed += 0.05;
+  }
+
+  remove(index)
+  {
+    this.isSink = true;
+
+    Body.setVelocity(this.body, { x: 0, y: 0 });
+
+    this.animation = waterSplahAnimation;
+    this.speed = 0.05;
+    this.r = 100;
+
+    // obs da Liz: parece o lifetime do trex
+    setTimeout(() => {
+      World.remove(world, this.body);
+      delete balls[index];
+    }, 1000);
   }
 }

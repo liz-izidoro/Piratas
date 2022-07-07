@@ -6,13 +6,14 @@ const Body = Matter.Body;
 
 var engine, world, backgroundImg,boat;
 var canvas, angle, tower, ground, cannon;
-var boatSpriteJson, boatSpriteImg, boatAnimation = [];
+var boatSpriteJson, boatSpriteImg;
 var brokenBoatSpriteJson, brokenBoatSpriteImg;
 var waterSplashJson, waterSplashImg;
-var waterSplahAnimation = [];
 var balls = [];
 var boats = [];
+var waterSplahAnimation = [];
 var brokenBoatAnimation = []
+var boatAnimation = []
 
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
@@ -32,8 +33,8 @@ function setup() {
   canvas = createCanvas(1200, 600);
   engine = Engine.create();
   world = engine.world;
-  angleMode(DEGREES)
-  angle = 15
+  angleMode(DEGREES);
+  angle = 15;
 
   ground = Bodies.rectangle(0, height - 1, width * 2, 1, { isStatic: true });
   World.add(world, ground);
@@ -49,18 +50,19 @@ function setup() {
     var img = boatSpriteImg.get(pos.x, pos.y, pos.w, pos.h);
     boatAnimation.push(img);
   }
+
   var brokenBoatFrames = brokenBoatSpriteJson.frames;
   for (let i = 0; i < brokenBoatFrames.length; i++) {
     var pos = brokenBoatFrames[i].position;
     var img = brokenBoatSpriteImg.get(pos.x, pos.y, pos.w, pos.h);
     brokenBoatAnimation.push(img);
   }
+
   var waterSplashFrames = waterSplashJson.frames;
-  for (let index = 0; index < waterSplashFrames.length; index++) {
-    var pos = waterSplashFrames[index].position;
+  for (let i = 0; i < waterSplashFrames.length; i++) {
+    var pos = waterSplashFrames[i].position;
     var img = waterSplashImg.get(pos.x, pos.y, pos.w, pos.h);
     waterSplahAnimation.push(img);
-    
   }
 }
 
@@ -69,10 +71,8 @@ function draw() {
   image(backgroundImg, 0, 0, width, height);
 
   Engine.update(engine);
-
   
   rect(ground.position.x, ground.position.y, width * 2, 1);
- 
 
   push();  
   imageMode(CENTER);
@@ -101,6 +101,15 @@ function keyPressed() {
 function showCannonBalls(ball, index) {
   if (ball) {
     ball.display();
+    ball.animate();
+
+    if (ball.body.position.x >= width) {
+      // fazer
+    }
+
+    if (ball.body.position.y  >= height - 50) {
+      ball.remove(index);
+    }
   }
 }
 
@@ -147,7 +156,10 @@ function collisionWithBoat(index)
     if (balls[index] !== undefined && boats[i] !== undefined) {
       var collision = Matter.SAT.collides(balls[index].body, boats[i].body);
       if (collision.collided) {
-        boats[i].remove(i);
+        
+        if (!boats[i].isBroken) {
+          boats[i].remove(i);
+        }
 
         World.remove(world, balls[index].body);
         delete balls[index];
