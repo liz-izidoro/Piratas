@@ -15,6 +15,8 @@ var waterSplahAnimation = [];
 var brokenBoatAnimation = []
 var boatAnimation = []
 
+var backgroundSound, waterSound, explosionSound, pirateSound;
+
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
   towerImage = loadImage("./assets/tower.png");
@@ -27,6 +29,11 @@ function preload() {
 
   waterSplashJson = loadJSON("./assets/waterSplash/waterSplash.json");
   waterSplashImg = loadImage("./assets/waterSplash/waterSplash.png");
+
+  backgroundSound = loadSound("./assets/assets_background_music.mp3");
+  waterSound = loadSound("./assets/assets_cannon_water.mp3");
+  explosionSound = loadSound("./assets/assets_cannon_explosion.mp3");
+  pirateSound = loadSound("./assets/assets_pirate_laugh.mp3");
 }
 
 function setup() {
@@ -79,6 +86,11 @@ function draw() {
   image(towerImage,tower.position.x, tower.position.y, 160, 310);
   pop();
 
+  if (!backgroundSound.isPlaying()) {
+    backgroundSound.play();
+    backgroundSound.setVolume(0.1);
+  }
+
   showBoats();
 
   for (var i = 0; i < balls.length; i++) {
@@ -115,7 +127,7 @@ function showCannonBalls(ball, index) {
 
 function showBoats() 
 {
-  // se já tiverem outros navios irá criar outros
+  // se jï¿½ tiverem outros navios irï¿½ criar outros
   if (boats.length > 0) {
     
     if(boats[boats.length - 1] === undefined || 
